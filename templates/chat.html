@@ -6,82 +6,164 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IPC Chatbot</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .chat-container {
-            background-color: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            width: 100%;
-            padding: 20px;
-        }
-        .chat-box {
-            height: 300px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin-bottom: 20px;
-            background-color: #fafafa;
-        }
-        .chat-message {
-            margin: 10px 0;
-        }
-        .user-message {
-            text-align: right;
-        }
-        .bot-message {
-            text-align: left;
-            color: blue;
-        }
-        label, input[type=text] {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-            display: block;
-            box-sizing: border-box;
-        }
-        input[type=submit] {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-        }
-        input[type=submit]:hover {
-            background-color: #45a049;
-        }
+        body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #121212; 
+    color: #FFFFFF; 
+}
+
+.header {
+    background-color: #1C1C1C; 
+    padding: 15px;
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 24px;
+    color: white; 
+}
+
+.logout-button {
+    background-color: #333333; 
+    border: none;
+    padding: 10px 15px;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.logout-button:hover {
+    background-color: #444444; 
+}
+
+.chat-container {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #1C1C1C; 
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); 
+    padding: 20px;
+}
+
+.message {
+    border-radius: 8px;
+    margin-bottom: 10px;
+    line-height: 1.4;
+    word-wrap: break-word;
+    padding: 10px;
+    display: inline-block;
+    clear: both;
+}
+
+.user-message {
+    background-color: #333333; 
+    color: white;
+    text-align: right;
+    float: right;
+}
+
+.bot-message {
+    background-color: #2D2D2D; 
+    text-align: left;
+    border: 1px solid #444444;
+    float: left;
+    max-width: 70%;
+}
+
+.input-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    background-color: #333333; 
+    padding: 10px;
+    border-radius: 5px;
+}
+
+input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #444444; 
+    color: white;
+}
+
+input[type="submit"] {
+    background-color: #2D2D2D; 
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+input[type="submit"]:hover {
+    background-color: #3A3A3A; 
+}
+
+.conversation-container {
+    overflow-y: auto;
+    max-height: 550px;
+    padding-bottom: 20px;
+}
+
+.conversation-container::-webkit-scrollbar {
+    width: 5px; 
+}
+
+.conversation-container::-webkit-scrollbar-thumb {
+    background-color: #555555; 
+    border-radius: 2.5px; 
+}
+
+.conversation-container::-webkit-scrollbar-track {
+    background-color: #1C1C1C; 
+}
+
+
     </style>
 </head>
 <body>
-    <div class="chat-container">
+    <div class="header">
         <h1>IPC Chatbot</h1>
-        <div class="chat-box" id="chat-box">
+        <form action="{{ url_for('logout') }}" method="post">
+            <button class="logout-button" type="submit">Logout</button>
+        </form>
+    </div>
+    <div class="chat-container">
+        <div class="conversation-container" id="conversationContainer">
             {% if messages %}
                 {% for message in messages %}
-                    <div class="chat-message {{ message.type }}">
-                        {{ message.text }}
+                    <div class="message user-message">
+                        {{ message.user_query }}
+                    </div>
+                    <div class="message bot-message">
+                        {{ message.bot_response }}
                     </div>
                 {% endfor %}
             {% endif %}
         </div>
         <form action="/query" method="post">
-            <label for="user_query">Enter your query:</label>
-            <input type="text" id="user_query" name="user_query">
-            <input type="submit" value="Submit">
+            <div class="input-container">
+                <input type="text" id="user_query" name="user_query" placeholder="Type your message...">
+                <input type="submit" value="Send">
+            </div>
         </form>
-    </div>
+        <script>
+    window.onload = function() {
+        var conversationContainer = document.getElementById('conversationContainer');
+        conversationContainer.scrollTop = conversationContainer.scrollHeight;
+    };
+</script>
 
-    <script>
-        var chatBox = document.getElementById('chat-box');
-        chatBox.scrollTop = chatBox.scrollHeight;
-    </script>
+    </div>
 </body>
 </html>
